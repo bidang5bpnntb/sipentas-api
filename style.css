@@ -1,0 +1,1486 @@
+:root { 
+  /* 1. PERBAIKAN KONTRAS WARNA */
+  --white: #FFFFFF; 
+  --black: #0F172A; /* Menggunakan Slate-900 (Hitam elegan, lebih ramah di mata dari hitam pekat) */
+  --gray-light: #94A3B8; /* Slate-400 (Pengganti B3B3B3 yang buram) */
+  --gray-dark: #334155; /* Slate-700 */
+  --bg: #F8FAFC; /* Latar belakang abu-abu sangat muda, agar kartu putih lebih menonjol */
+  --surface: #FFFFFF; /* Kartu warna putih solid */
+  --border: #E2E8F0; /* Garis batas lebih tegas tapi lembut */
+  
+  /* WARNA TEKS LEBIH TAJAM */
+  --text: #1E293B; /* Slate-800 */
+  --text-sub: #475569; /* Slate-600 */
+  --text-muted: #64748B; /* Slate-500 (Ini kunci utama hilangnya kesan buram) */
+  
+  --radius: 12px; 
+  --radius-sm: 6px; 
+  --shadow: 0 2px 10px rgba(15, 23, 42, 0.04); 
+  --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08); 
+  --transition: 0.3s ease; 
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { 
+  font-family: 'DM Sans', sans-serif; 
+  background: var(--bg); 
+  color: var(--text); 
+  min-height: 100vh; 
+  overflow-x: hidden; 
+  
+  /* 2. PERBAIKAN KETAJAMAN FONT (ANTI-ALIASING) */
+  -webkit-font-smoothing: antialiased; 
+  -moz-osx-font-smoothing: grayscale; /* Menambah ketajaman ekstra di layar resolusi tinggi */
+  
+  /* 3. PENYESUAIAN UKURAN DASAR */
+  font-size: 14px; /* Dinaikkan sedikit dari 13.5px agar lebih solid */
+  line-height: 1.6;
+  margin: 0; 
+}
+/* LOGIN */
+#login-container { display: flex; min-height: 100vh; width: 100vw; background: var(--white); }
+.login-left { flex: 1.2; background: var(--black); color: var(--white); position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 60px; overflow: hidden; }
+.login-left::before { content: ''; position: absolute; top: -20%; left: -10%; width: 150%; height: 150%; background: radial-gradient(circle at top left, rgba(255,255,255,0.1) 0%, transparent 60%); pointer-events: none; }
+.login-left-content { position: relative; z-index: 2; max-width: 480px; margin: auto 0; }
+.login-left h1 { font-family: 'DM Serif Display', serif; font-size: 46px; line-height: 1.1; margin-bottom: 20px; } .login-left h1 em { font-style: italic; color: rgba(255,255,255,0.5); }
+.login-left p { font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.7); margin-bottom: 40px; }
+.login-left-footer { position: relative; z-index: 2; font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.08em; }
+.login-right { flex: 1; display: flex; align-items: center; justify-content: center; background: var(--bg); padding: 40px; position: relative; }
+.login-form-box { width: 100%; max-width: 380px; }
+.login-brand { display: flex; align-items: center; gap: 14px; margin-bottom: 40px; } .login-brand-icon { width: 44px; height: 44px; background: var(--black); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.login-brand-text h2 { font-family: 'DM Serif Display', serif; font-size: 24px; line-height: 1; } .login-brand-text p { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+.pw-wrapper { position: relative; } .pw-toggle { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 0; display: flex; align-items: center; justify-content: center; transition: color 0.2s; } .pw-toggle:hover { color: var(--black); }
+@media (max-width: 900px) { .login-left { display: none; } }
+
+/* APP & SIDEBAR */
+#app-container { display: flex; min-height: 100vh; width: 100vw; }
+.sidebar { width: 260px; background: var(--black); color: var(--white); display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100; transition: transform var(--transition); overflow: hidden; }
+.sidebar::before { content: ''; position: absolute; top: -120px; left: -80px; width: 320px; height: 320px; background: radial-gradient(circle, rgba(179,179,179,0.08) 0%, transparent 70%); pointer-events: none; }
+.sidebar-brand { padding: 28px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.07); } .brand-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 20px; padding: 4px 12px 4px 4px; margin-bottom: 14px; } .brand-dot { width: 20px; height: 20px; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; } .brand-dot svg { width: 10px; height: 10px; } .brand-badge span { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; opacity: 0.7; text-transform: uppercase; } .brand-title { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1.2; color: var(--white); } .brand-title em { font-style: italic; color: var(--gray-light); } .brand-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px; letter-spacing: 0.02em; line-height: 1.5; }
+.sidebar-nav { padding: 16px 12px; flex: 1; overflow-y: auto; } .nav-section-label { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.25); padding: 12px 12px 6px; } .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease; position: relative; margin-bottom: 2px; color: rgba(255,255,255,0.55); font-size: 13.5px; font-weight: 400; user-select: none; } .nav-item svg { width: 16px; height: 16px; opacity: 0.7; flex-shrink: 0; } .nav-item:hover { background: rgba(255,255,255,0.07); color: var(--white); } .nav-item:hover svg { opacity: 1; } .nav-item.active { background: rgba(255,255,255,0.10); color: var(--white); font-weight: 500; } .nav-item.active svg { opacity: 1; } .nav-item.active::before { content: ''; position: absolute; left: 0; top: 20%; height: 60%; width: 2px; background: var(--white); border-radius: 2px; } .nav-badge { margin-left: auto; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; } .nav-item.active .nav-badge { background: var(--white); color: var(--black); } .sidebar-footer { padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 11px; color: rgba(255,255,255,0.25); line-height: 1.6; }
+
+/* TOPBAR */
+.main { margin-left: 260px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; transition: margin var(--transition); min-width: 0; }
+.topbar { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 36px; height: 64px; display: flex; align-items: center; justify-content: space-between; } .topbar-left { display: flex; align-items: center; gap: 12px; } .page-crumb { font-size: 12px; color: var(--text-muted); letter-spacing: 0.02em; } .page-crumb span { color: var(--text); font-weight: 500; } .topbar-right { display: flex; align-items: center; gap: 16px; }
+.role-indicator { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: var(--surface); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; color: #1B5E20; display: flex; align-items: center; gap: 6px; } .role-indicator .dot { width: 6px; height: 6px; background: #1B5E20; border-radius: 50%; }
+.dropdown { position: relative; display: inline-block; } .user-chip { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px 6px 6px; cursor: pointer; transition: all 0.2s; user-select: none; } .user-chip:hover { border-color: var(--black); box-shadow: 0 2px 8px rgba(0,0,0,0.05); } .user-avatar { width: 28px; height: 28px; background: var(--black); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; overflow:hidden; } .user-avatar img { width:100%; height:100%; object-fit:cover; } .user-name { font-size: 12px; font-weight: 500; color: var(--text); } .dropdown-menu { position: absolute; top: calc(100% + 8px); right: 0; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-md); min-width: 160px; display: none; flex-direction: column; z-index: 1000; overflow: hidden; } .dropdown-menu.show { display: flex; animation: fadeDown 0.2s ease; } @keyframes fadeDown { from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} } .dropdown-item { padding: 12px 16px; font-size: 13px; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.2s; text-decoration: none; font-family: 'DM Sans', sans-serif; border:none; background:none; text-align:left; width:100%; } .dropdown-item:hover { background: var(--surface); } .dropdown-item.danger:hover { color: #C0392B; }
+
+/* PAGES & CARDS */
+.content { padding: 36px; flex: 1; transition: padding var(--transition); } .page { display: none; } .page.active { display: block; animation: pageIn 0.45s cubic-bezier(0.4,0,0.2,1); } @keyframes pageIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.page-header { margin-bottom: 32px; } .page-header h1 { font-family: 'DM Serif Display', serif; font-size: 32px; line-height: 1.15; color: var(--text); } .page-header h1 em { font-style: italic; color: var(--gray-light); } .page-header p { color: var(--text-muted); font-size: 14px; margin-top: 6px; }
+.chart-grid, .dashboard-grid { display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
+.chart-grid { margin-bottom: 20px;}
+.card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; min-width: 0; } .card-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; } .card-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; color: var(--text); } .card-body { padding: 22px; } .card-action { font-size: 12px; color: var(--text-muted); cursor: pointer; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 5px 12px; transition: all 0.2s; background: none; font-family: 'DM Sans', sans-serif; } .card-action:hover { border-color: var(--gray-dark); color: var(--text); }
+
+/* FORMS & TABLES */
+.scrollable { overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch; display: block; } .data-table { width: 100%; border-collapse: collapse; } .data-table th { text-align: left; padding: 10px 14px; font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; } .data-table td { padding: 12px 14px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; white-space: nowrap; } .data-table tr { transition: background 0.15s; cursor: pointer; } .data-table tr:hover td { background: var(--surface); }
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; } .badge-admin { background: #F0F0F0; color: var(--gray-dark); border: 1px solid #E0E0E0; } .badge-court { background: var(--black); color: var(--white); } .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+.status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; } .status-1 { background: #FFF8E1; color: #B7791F; } .status-2 { background: #E8F5E9; color: #2E7D32; } .status-3 { background: #E3F2FD; color: #1565C0; } .status-4 { background: #F3E5F5; color: #6A1B9A; } .status-5 { background: #E8F5E9; color: #1B5E20; } .status-0 { background: var(--surface); color: var(--text-muted); }
+.pipeline { display: flex; gap: 4px; align-items: center; flex-wrap: nowrap; overflow: hidden; } .pipe-step { flex: 1; height: 4px; background: var(--border); border-radius: 2px; position: relative; min-width: 0; } .pipe-step.done { background: var(--black); } .pipe-step.active { background: var(--gray-dark); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; } .form-grid.full { grid-template-columns: 1fr; } .form-group { display: flex; flex-direction: column; gap: 6px; } .form-group label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); cursor: pointer; } .form-control { padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: var(--text); outline: none; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); width: 100%; }
+.form-control:focus { border-color: var(--black); box-shadow: 0 0 0 4px rgba(5,5,5,0.08); transform: translateY(-1px); }
+.form-control:disabled { background: var(--surface); cursor: not-allowed; opacity: 0.7; border-color: var(--border); transform: none; box-shadow: none; }
+
+.search-row { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; } 
+.search-box { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0 14px; background: var(--white); transition: border-color 0.2s, box-shadow 0.2s; } 
+.search-box:focus-within { border-color: var(--black); box-shadow: 0 0 0 3px rgba(5,5,5,0.06); } 
+.search-box input { border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: var(--text); background: none; width: 100%; padding: 10px 0; } 
+.search-box input:focus-visible, .search-box input:focus { outline: none !important; box-shadow: none !important; }
+.filter-select { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; cursor: pointer; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 500; cursor: pointer; border: none; outline: none; transition: all 0.2s; white-space: nowrap; } .btn-primary { background: var(--black); color: var(--white); } .btn-primary:hover { background: var(--gray-dark); } .btn-secondary { background: var(--white); color: var(--text); border: 1px solid var(--border); } .btn-secondary:hover { border-color: var(--gray-dark); } .btn-ghost { background: none; color: var(--text-muted); border: none; } .btn-ghost:hover { color: var(--text); } .btn-sm { padding: 7px 14px; font-size: 12px; } .btn-danger { background: #FFF5F5; color: #C0392B; border: 1px solid #FFD0CC; } .btn-danger:hover { background: #FFE8E5; } .btn-full { width: 100%; } .divider { height: 1px; background: var(--border); margin: 24px 0; }
+.btn-excel { 
+  background: var(--white); 
+  color: #107C41; /* Warna hijau khas MS Excel */
+  border: 1px solid #107C41; 
+} 
+/* ==========================================================
+   LAYOUT PENGATURAN (SETTINGS GRID)
+   ========================================================== */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Kolom kiri lebih kecil, kanan lebih lebar */
+  gap: 24px;
+  align-items: start;
+}
+
+/* Memastikan form di halaman pengaturan rata dan rapi */
+#page-pengaturan .card-body {
+  padding: 24px;
+}
+
+#page-pengaturan .card {
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
+}
+.btn-excel:hover { 
+  background: #F3FBF5; 
+  border-color: #0B5A2F; 
+  color: #0B5A2F; 
+  box-shadow: 0 4px 12px rgba(16, 124, 65, 0.1);
+}
+/* DETAIL VIEW & AUDIT TRAIL */
+.detail-header { background: var(--black); color: var(--white); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; position: relative; overflow: hidden; } .detail-header::before { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%); } .detail-case-id { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.10em; opacity: 0.5; margin-bottom: 8px; } .detail-title { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1.3; margin-bottom: 10px; } .detail-metas { display: flex; gap: 20px; flex-wrap: wrap; } .detail-meta-item { font-size: 12px; opacity: 0.6; } .detail-meta-item strong { opacity: 1; margin-right: 4px; }
+/* TIMELINE STEPPER TERBARU */
+.stepper { margin: 20px 0 10px 16px; padding-left: 0; border-left: 2px solid var(--border); } 
+.step-item { display: flex; gap: 20px; padding: 0 0 32px 24px; position: relative; border: none !important; } 
+.step-item:last-child { padding-bottom: 0; }
+.step-item:last-child::before { content: ''; position: absolute; left: -2px; top: 32px; bottom: 0; width: 2px; background: var(--white); /* Menutup garis lebih pada step terakhir */ }
+.step-num { position: absolute; left: -17px; top: 0; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; background: var(--surface); color: var(--text-muted); border: 4px solid var(--white); box-shadow: 0 0 0 1px var(--border); z-index: 2; transition: all 0.3s; } 
+.step-num.done { background: var(--black); color: var(--white); border-color: var(--white); box-shadow: 0 0 0 1px var(--black); } 
+.step-num.active { background: var(--black); color: var(--white); border-color: var(--white); box-shadow: 0 0 0 4px rgba(5,5,5,0.1); } 
+.step-num.success { background: #1B5E20; color: var(--white); border-color: var(--white); box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.2); } 
+.step-num.warning { background: #FFF8E1; color: #F59E0B; border-color: var(--white); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+.step-num.danger { background: #FEF2F2; color: #EF4444; border-color: var(--white); box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); }
+.step-item.dashed::before { border-left: 2px dashed var(--border); background: transparent; }
+.status-pending { background: #FFF8E1; color: #F59E0B; }
+.status-rejected { background: #FEF2F2; color: #EF4444; }
+.step-content { flex: 1; min-width: 0; background: var(--white); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.02); margin-top: -12px; transition: border-color 0.2s; }
+.step-content:hover { border-color: var(--gray-light); }
+.step-content .step-title { font-size: 13.5px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; } 
+.step-content .step-date { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; } 
+.step-content .step-note { font-size: 13px; color: var(--text-sub); background: var(--surface); border-radius: 4px; padding: 10px 14px; margin-top: 10px; line-height: 1.5; border-left: 3px solid var(--gray-light); }
+.audit-timeline { margin-top: 10px; } .audit-item { display: flex; gap: 14px; margin-bottom: 16px; position: relative; } .audit-item::before { content: ''; position: absolute; left: 6px; top: 20px; bottom: -16px; width: 1px; border-left: 1px dashed var(--border); } .audit-item:last-child::before { display: none; } .audit-dot { width: 13px; height: 13px; border-radius: 50%; background: var(--surface); border: 2px solid var(--gray-dark); flex-shrink: 0; margin-top: 4px; position: relative; z-index: 2; } .audit-content { flex: 1; background: var(--surface); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); } .audit-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; } .audit-user { font-size: 13px; font-weight: 600; color: var(--text); } .audit-role { font-size: 10px; background: rgba(5,5,5,0.06); padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;} .audit-time { font-size: 11px; color: var(--text-muted); } .audit-action { font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+
+/* MODALS & UTILS */
+.modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(5,5,5,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; } .modal-overlay.open { opacity: 1; pointer-events: all; } .modal { background: var(--white); border-radius: var(--radius); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(5,5,5,0.2); transform: translateY(20px) scale(0.97); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); } .modal-overlay.open .modal { transform: none; } .modal-header { padding: 22px 24px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--white); z-index: 1; } .modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; } .modal-close { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; } .modal-close:hover { background: var(--surface); } .modal-close svg { width: 14px; height: 14px; } .modal-body { padding: 24px; } .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+#toast-container { position: fixed; bottom: 28px; right: 28px; z-index: 999; display: flex; flex-direction: column; gap: 10px; } .toast { background: var(--black); color: var(--white); padding: 13px 20px; border-radius: var(--radius-sm); font-size: 13px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-md); animation: toastIn 0.35s cubic-bezier(0.4,0,0.2,1); max-width: 320px; } .toast.success { background: #1B5E20; } .toast.error { background: #B71C1C; } @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; } ::-webkit-scrollbar-thumb:hover { background: var(--gray-light); }
+.progress-bar { background: var(--border); border-radius: 3px; height: 6px; overflow: hidden; } .progress-fill { height: 100%; background: var(--black); border-radius: 3px; transition: width 0.6s ease; } .tabs { display: flex; gap: 2px; background: var(--surface); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 20px; width: fit-content; } .tab { padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--text-muted); border: none; background: none; font-family: 'DM Sans', sans-serif; } .tab.active { background: var(--white); color: var(--text); box-shadow: 0 1px 4px rgba(5,5,5,0.08); } .tab:hover:not(.active) { color: var(--text); } .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; } .info-item label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px; } .info-item span { font-size: 13.5px; color: var(--text); }
+
+.menu-toggle { display: none; background: none; border: none; cursor: pointer; color: var(--text); padding: 5px; } .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(5,5,5,0.4); z-index: 90; opacity: 0; transition: opacity 0.3s; } .sidebar-overlay.active { display: block; opacity: 1; } button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--black); outline-offset: 2px; }
+/* ==========================================================
+   UNIFIED STATS PANEL (COMPACT & ELEGANT DASHBOARD BAR)
+   ========================================================== */
+.unified-stats-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 16px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.unified-stats-panel:hover {
+  box-shadow: 0 10px 32px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+.stat-segment {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  transition: transform 0.2s ease;
+}
+
+.center-segment { justify-content: center; }
+.right-segment { justify-content: flex-end; }
+
+.stat-segment:hover { transform: scale(1.02); }
+/* Kelas Khusus untuk Metrik yang Bisa Diklik */
+.clickable-stat {
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 12px; /* Memberikan batas lengkung tak terlihat untuk efek hover */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efek saat mouse mengambang di atasnya */
+.clickable-stat:hover {
+  transform: scale(1.04);
+  background: rgba(15, 23, 42, 0.02); /* Sorotan abu-abu sangat transparan */
+}
+
+/* Efek saat diklik (ditekan) */
+.clickable-stat:active {
+  transform: scale(0.96); /* Menyusut ke dalam layaknya tombol fisik */
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.stat-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.stat-info { display: flex; flex-direction: column; }
+
+.stat-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.stat-angka {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  line-height: 1.1;
+  color: var(--black);
+}
+
+.stat-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+  margin: 0 16px;
+  opacity: 0.6;
+}
+
+@media (max-width: 900px) {
+  .unified-stats-panel {
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 24px;
+    border-radius: 16px;
+  }
+  .stat-segment {
+    min-width: 40%;
+    justify-content: flex-start !important;
+  }
+  .stat-divider { display: none; }
+}
+@media (max-width: 1024px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .main { margin-left: 0; } .menu-toggle { display: block; } .topbar { padding: 0 20px; } .content { padding: 20px; } .chart-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .form-grid { grid-template-columns: 1fr !important; } .info-grid { grid-template-columns: 1fr; } .dashboard-grid { display: flex; flex-direction: column; } .settings-grid { grid-template-columns: 1fr; } .detail-metas { flex-direction: column; gap: 8px; } }
+/* EFEK TOMBOL KEMBALI MODERN */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 8px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 24px; /* Bentuk kapsul melengkung (Pill shape) */
+  color: var(--text-sub);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 24px;
+}
+
+.btn-back svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease; /* Animasi khusus untuk panah */
+}
+
+.btn-back:hover {
+  background: var(--white);
+  border-color: var(--border);
+  color: var(--black);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05); /* Bayangan lembut muncul */
+}
+
+/* Kunci animasinya ada di sini: Panah bergeser ke kiri saat di-hover */
+.btn-back:hover svg {
+  transform: translateX(-4px);
+}
+
+/* ==========================================================
+   UPGRADE UI/UX (STICKY HEADER, TOAST, & TAB ANIMATION)
+   ========================================================== */
+
+/* 1. STICKY HEADER TABEL */
+.scrollable { 
+  overflow-y: auto; 
+  max-height: 65vh; /* Batas tinggi tabel agar bisa di-scroll ke bawah */
+  padding-bottom: 10px;
+} 
+.data-table th { 
+  position: sticky; 
+  top: 0; 
+  background: var(--surface); /* Warna background solid agar text di bawahnya tidak tembus */
+  z-index: 10; 
+  border-bottom: 2px solid var(--border); 
+  box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05); /* Efek bayangan saat tabel di-scroll */
+}
+
+/* 2. UPGRADE TOAST NOTIFICATION (Pop-up Sukses/Error) */
+.toast { 
+  position: relative;
+  padding: 16px 20px; 
+  font-weight: 500;
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+  overflow: hidden; /* Penting untuk menyembunyikan ujung progress bar */
+  animation: toastIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+} 
+.toast-icon { font-size: 18px; }
+.toast-progress {
+  position: absolute;
+  bottom: 0; 
+  left: 0; 
+  height: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  animation: toastProgress 3s linear forwards; /* 3 detik menyusut */
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateX(30px) scale(0.95); }
+}
+@keyframes toastProgress {
+  0% { width: 100%; }
+  100% { width: 0%; }
+}
+
+/* 3. FADE-IN ANIMATION UNTUK TAB FORMULIR */
+.fade-in-tab {
+  animation: fadeInTab 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes fadeInTab {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* ==========================================================
+   HORIZONTAL TIMELINE CALENDAR
+   ========================================================== */
+.timeline-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px; /* Ruang untuk scrollbar */
+}
+
+/* Custom Scrollbar Tipis & Elegan */
+.timeline-wrapper::-webkit-scrollbar { height: 4px; }
+.timeline-wrapper::-webkit-scrollbar-track { background: transparent; }
+.timeline-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.timeline-wrapper::-webkit-scrollbar-thumb:hover { background: var(--gray-light); }
+
+.timeline-track {
+  display: inline-flex;
+  gap: 12px;
+  padding: 4px 2px;
+}
+
+/* Kapsul Tanggal (Pill) */
+.timeline-item {
+  min-width: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 10px;
+  border-radius: 100px; /* Bentuk kapsul penuh */
+  background: var(--white);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.timeline-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.06);
+  border-color: var(--black);
+}
+
+.timeline-day {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.timeline-date {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: var(--text);
+  line-height: 1;
+}
+
+/* Indikator Agenda (Titik di bawah tanggal) */
+.timeline-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: transparent;
+  margin-top: 8px;
+  transition: all 0.2s;
+}
+
+/* --- STATE: HARI INI --- */
+.timeline-item.today {
+  background: var(--black);
+  border-color: var(--black);
+}
+.timeline-item.today .timeline-day,
+.timeline-item.today .timeline-date {
+  color: var(--white);
+}
+
+/* --- STATE: HARI LIBUR / WEEKEND --- */
+.timeline-item.holiday .timeline-date {
+  color: #EF4444; /* Merah */
+}
+
+/* --- STATE: ADA AGENDA --- */
+.timeline-item.has-agenda .timeline-indicator {
+  background: var(--neon-green);
+  box-shadow: 0 0 6px var(--neon-green-alpha);
+}
+/* ==========================================================
+   TIMELINE HEADER (BULAN & TAHUN ELEGAN)
+   ========================================================== */
+.timeline-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Bulan: Besar, Serif, Elegan */
+.timeline-month-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px;
+  color: var(--text);
+  line-height: 1;
+}
+
+/* Tahun: Kapsul kecil, Modern, Tegas */
+.timeline-year-badge {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.1em;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* Tombol Navigasi Kiri/Kanan: Bulat Sempurna */
+.btn-timeline-nav {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-timeline-nav:hover {
+  border-color: var(--black);
+  color: var(--black);
+  background: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+/* SUPPORT DARK MODE (Menyala Neon) */
+[data-theme="dark"] .timeline-month-text { color: var(--text); }
+[data-theme="dark"] .timeline-year-badge { 
+  background: rgba(204, 255, 0, 0.08); 
+  color: var(--neon-green); 
+  border-color: rgba(204, 255, 0, 0.25); 
+}
+[data-theme="dark"] .btn-timeline-nav { background: transparent; }
+[data-theme="dark"] .btn-timeline-nav:hover { 
+  border-color: var(--neon-green); 
+  color: #0D0D0D; 
+  background: var(--neon-green);
+  box-shadow: 0 4px 12px rgba(204, 255, 0, 0.2); 
+}
+
+/* DARK MODE SUPPORT */
+[data-theme="dark"] .timeline-item { background: transparent; }
+[data-theme="dark"] .timeline-item.today { 
+  background: var(--neon-green); 
+  border-color: var(--neon-green);
+}
+[data-theme="dark"] .timeline-item.today .timeline-day { color: rgba(13, 13, 13, 0.7); }
+[data-theme="dark"] .timeline-item.today .timeline-date { color: #0D0D0D; }
+/* ==========================================================
+   EMPTY STATE (STATUS KOSONG) MODERN
+   ========================================================== */
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 20px; text-align: center; }
+.empty-state-icon { width: 80px; height: 80px; background: #F8FAFC; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: #94A3B8; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+.empty-state-icon svg { width: 36px; height: 36px; stroke-width: 1.5; }
+.empty-state-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); margin-bottom: 8px; }
+.empty-state-desc { font-size: 13.5px; color: var(--text-muted); max-width: 320px; line-height: 1.6; }
+/* ==========================================================
+   EFEK RADAR & NEON MAP (LOGIN SCREEN)
+   ========================================================== */
+
+/* Filter Peta: Membuat base map gelap menjadi sedikit kebiruan/hologram */
+#login-map-bg .leaflet-tile-pane {
+  filter: sepia(1) hue-rotate(180deg) saturate(2) contrast(1.2) brightness(0.6);
+}
+
+/* 1. Garis Grid Taktis ala Layar Intelijen */
+.tactical-grid-overlay {
+  background-image: 
+    linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  /* Membuat pinggiran layar lebih gelap (vignette) agar fokus ke tengah */
+  box-shadow: inset 0 0 150px 50px rgba(15, 23, 42, 1);
+}
+
+/* 2. Animasi Sapuan Radar (Radar Sweep) */
+.radar-sweep {
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  /* Gradien kerucut berputar */
+  background: conic-gradient(from 0deg, transparent 70%, rgba(6, 182, 212, 0.05) 80%, rgba(6, 182, 212, 0.3) 100%);
+  animation: sweep-rotate 6s linear infinite;
+  mix-blend-mode: screen;
+}
+
+@keyframes sweep-rotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* 3. Marker Neon Inti (Titik Sengketa) */
+.neon-marker {
+  position: relative;
+  background: #ffffff; /* Inti putih menyala seterang mungkin */
+  border-radius: 50%;
+}
+
+/* Warna Cyan (Kasus Standar) */
+.neon-marker.cyan {
+  box-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4, 0 0 30px #06b6d4, 0 0 40px rgba(6, 182, 212, 0.5);
+  color: #06b6d4; /* Untuk mewarnai border sonar */
+}
+
+/* Warna Merah/Magenta (Kasus Kritis) */
+.neon-marker.red {
+  box-shadow: 0 0 10px #f43f5e, 0 0 20px #f43f5e, 0 0 30px #f43f5e, 0 0 40px rgba(244, 63, 94, 0.5);
+  color: #f43f5e;
+}
+
+/* 4. Gelombang Sonar (Ping Ring) dari dalam titik */
+.neon-marker::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%; height: 100%;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  animation: sonar-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0;
+}
+
+@keyframes sonar-ping {
+  0% { width: 100%; height: 100%; opacity: 1; border-width: 3px; }
+  100% { width: 400%; height: 400%; opacity: 0; border-width: 0px; }
+}
+/* ==========================================================
+   DYNAMIC ISLAND LOGIN NOTIFICATION (APPLE STYLE)
+   ========================================================== */
+.dynamic-island {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000000;
+    color: var(--white);
+    /* Ukuran awal (Notch kecil membulat) */
+    height: 32px;
+    width: 100px; 
+    border-radius: 32px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    opacity: 0; /* Tersembunyi di awal */
+    pointer-events: none;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    /* Transisi bouncy ala Apple */
+    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+
+/* State Saat Animasi Aktif (Melebar) */
+.dynamic-island.active {
+    opacity: 1;
+    width: 320px; /* Melebar secara dinamis */
+    height: 48px; /* Sedikit lebih tinggi */
+}
+
+.di-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 16px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0.15s; /* Teks muncul setelah kotak selesai melebar */
+}
+
+.dynamic-island.active .di-content {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.di-icon {
+    color: #10B981; /* Warna hijau sukses */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.di-text {
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    flex: 1;
+    text-align: center;
+    margin: 0 12px;
+    letter-spacing: 0.02em;
+}
+
+.di-avatar {
+    width: 26px;
+    height: 26px;
+    background: #334155;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+/* ==========================================================
+   MAP MARKER (TITIK RADAR SENGKETA DI DASHBOARD)
+   ========================================================== */
+.custom-pulse-icon {
+    background: transparent;
+    border: none;
+}
+
+/* Titik Inti Merah */
+.pulse-marker {
+    width: 14px;
+    height: 14px;
+    background-color: #EF4444; /* Merah menyala */
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+    cursor: pointer;
+}
+
+/* Gelombang Denyut (Pulse Ping) */
+.pulse-marker::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background-color: #EF4444;
+    border-radius: 50%;
+    z-index: -1;
+    animation: dashboard-ping 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes dashboard-ping {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+    100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+}
+
+/* --- Tampilan Popup Saat Titik Peta Diklik --- */
+.leaflet-popup-content-wrapper {
+    border-radius: 12px !important;
+    padding: 2px !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    border: 1px solid var(--border);
+}
+.leaflet-popup-content { margin: 12px 16px !important; }
+.leaflet-popup-tip { background: var(--white) !important; border: 1px solid var(--border); border-top: none; border-left: none; }
+
+.map-popup-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 6px;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.map-popup-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text-sub);
+}
+
+.map-popup-text span {
+    font-weight: 800;
+    font-size: 14px;
+    color: #EF4444; /* Angka merah tegas */
+}
+/* ==========================================================
+   DEEP-DIVE MAP UI (GLASSMORPHISM)
+   ========================================================== */
+/* Tombol Kembali di Dalam Peta */
+.map-back-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px; /* Posisi Kanan Atas di dalam area peta */
+  z-index: 1000; /* Harus di atas layer Leaflet */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.map-back-btn:hover {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.15);
+}
+
+.map-back-btn:hover svg {
+  transform: translateX(-4px); /* Animasi panah */
+  transition: transform 0.3s;
+}
+
+/* Tooltip Peta Modern (Menggantikan Popup Bawaan) */
+.custom-map-tooltip {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+  color: var(--text) !important;
+}
+
+.custom-map-tooltip::before {
+  border-top-color: var(--border) !important; /* Warna panah tooltip */
+}
+
+/* Dukungan Dark Mode */
+[data-theme="dark"] .map-back-btn {
+  background: rgba(26, 28, 30, 0.85);
+  border-color: rgba(204, 255, 0, 0.3);
+  color: var(--text);
+}
+[data-theme="dark"] .map-back-btn:hover {
+  background: var(--neon-green);
+  color: #0D0D0D;
+}
+[data-theme="dark"] .custom-map-tooltip {
+  background: rgba(26, 28, 30, 0.95) !important;
+  border-color: rgba(204, 255, 0, 0.3) !important;
+  color: var(--text) !important;
+}
+/* ==========================================================
+   LIST AGENDA KEGIATAN & TOMBOL AKSI
+   ========================================================== */
+.agenda-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    transition: all 0.2s;
+}
+
+.agenda-item:hover {
+    border-color: var(--black);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.agenda-item-content { flex: 1; }
+.agenda-item-title { font-weight: 600; font-size: 13.5px; color: var(--text); line-height: 1.4; }
+.agenda-item-berkas { font-size: 11px; color: var(--text-muted); margin-top: 4px; display: inline-block; background: var(--bg); padding: 2px 6px; border-radius: 4px; }
+
+.agenda-actions { display: flex; gap: 4px; }
+.btn-agenda-action {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.btn-agenda-action.edit:hover { background: #EFF6FF; color: #3B82F6; }
+.btn-agenda-action.delete:hover { background: #FEF2F2; color: #EF4444; }
+/* ==========================================================
+   LIVE TIME CAPSULE (COMPACT & MODERN)
+   ========================================================== */
+.header-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end; /* Memastikan kapsul sejajar dengan teks bawah */
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.live-time-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--black); /* Menggunakan warna slate-900 dari tema Anda */
+  color: var(--white);
+  padding: 8px 18px;
+  border-radius: 30px; /* Bentuk kapsul yang sangat smooth */
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: 'DM Sans', sans-serif;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  cursor: default;
+  user-select: none;
+}
+
+.live-time-capsule:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.2);
+}
+
+/* Animasi Titik Berdenyut (Radar Pulse) */
+.time-pulse {
+  width: 8px;
+  height: 8px;
+  background-color: #10B981; /* Hijau Emerald */
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+  animation: clock-pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes clock-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.time-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.time-divider {
+  color: var(--text-muted);
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+.clock-display {
+  font-family: 'Syne', sans-serif; /* Menggunakan font Syne agar angka terlihat futuristik */
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: 0.08em;
+  color: #38BDF8; /* Aksen Light Blue / Cyan yang out of the box */
+}
+/* ==========================================================
+   UNIVERSAL SMART BACK PILL (TOPBAR)
+   ========================================================== */
+.universal-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 30px; /* Bentuk Kapsul/Pill */
+  padding: 6px 14px 6px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  margin-right: 14px; /* Jarak dengan breadcrumb */
+  
+  /* State Awal: Sembunyi & Bergeser ke Kiri */
+  opacity: 0;
+  transform: translateX(-15px);
+  pointer-events: none; /* Tidak bisa diklik saat sembunyi */
+  position: absolute; /* Agar tidak memakan tempat saat sembunyi */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* State Aktif: Muncul & Meluncur ke Kanan */
+.universal-back-btn.show {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  position: relative; 
+}
+
+/* Efek Hover Out of the Box */
+.universal-back-btn:hover {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
+  transform: translateY(-1px);
+}
+
+.universal-back-btn svg {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Panah menembak ke kiri saat di-hover */
+.universal-back-btn:hover svg {
+  transform: translateX(-4px);
+}
+/* ==========================================================
+   THE ZEN RING & SMART DROPDOWN - UPDATE: NEON GREEN
+   ========================================================== */
+/* Definisi Variabel Warna di :root (Letakkan paling atas file CSS jika belum ada) */
+:root {
+  /* ... variabel lama ... */
+  --neon-green: #CCFF00; /* Warna Hijau Neon Khas Dark Mode kita */
+  --neon-green-alpha: rgba(204, 255, 0, 0.5); /* Versi semi transparan untuk glow */
+}
+
+/* 1. Efek Glow Cincin Avatar - Diperbarui */
+.user-avatar {
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.user-avatar.has-notif {
+  /* Di Mode Terang: Gunakan gradien cincin agar lebih terlihat di bg putih */
+  background: padding-box, linear-gradient(135deg, #CCFF00 0%, #10B981 100%) border-box;
+  border-color: transparent;
+  animation: zen-glow-neon 2s infinite alternate ease-in-out;
+}
+
+@keyframes zen-glow-neon {
+  0% { 
+    box-shadow: 0 0 0 0 var(--neon-green-alpha), 0 0 8px 1px var(--neon-green-alpha); 
+  }
+  100% { 
+    box-shadow: 0 0 0 6px rgba(204, 255, 0, 0), 0 0 15px 4px rgba(204, 255, 0, 0); 
+  }
+}
+
+/* 2. Styling Dropdown Gabungan (Tetap Sama) */
+.zen-dropdown {
+  width: 340px !important;
+  padding: 0 !important;
+  border-radius: 16px !important;
+  transform-origin: top right;
+}
+
+.zen-dropdown-header {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  border-radius: 16px 16px 0 0;
+}
+
+.zen-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.zen-clear-btn {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: color 0.2s;
+}
+.zen-clear-btn:hover { color: var(--black); text-decoration: underline; }
+
+.zen-notif-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.zen-notif-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.zen-notif-item:hover { background: var(--bg); }
+
+/* Penanda belum dibaca - Update: Gunakan Aksen Hijau Neon */
+.zen-notif-item.unread { 
+  background: #F8FAFC; 
+  border-left: 3px solid var(--neon-green); 
+}
+[data-theme="dark"] .zen-notif-item.unread { background: #1a1c1e; }
+.zen-notif-item.unread:hover { background: #F1F5F9; }
+
+.zen-notif-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.zen-notif-content { flex: 1; }
+.zen-notif-title { font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.zen-notif-desc { font-size: 11.5px; color: var(--text-sub); line-height: 1.4; margin-bottom: 6px; }
+.zen-notif-time { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+
+.zen-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* Penyesuaian Dark Mode - Sangat Harmonis dengan Neon Green */
+[data-theme="dark"] .zen-dropdown-header { background: #0D0D0D; }
+[data-theme="dark"] .user-avatar.has-notif { 
+    /* Di Dark Mode, biarkan shadow/glow neon yang bekerja, tanpa gradien border */
+    background: transparent;
+    border-color: var(--neon-green);
+}
+/* ==========================================================
+   THE SHY BUTTON & DELETE ANIMATION
+   ========================================================== */
+/* Pastikan item notifikasi pakai flex yang rata atas agar tombol X posisinya pas */
+.zen-notif-item {
+  align-items: flex-start; 
+  overflow: hidden; /* Penting untuk animasi menghilang */
+}
+
+/* Tombol X yang tersembunyi */
+.zen-notif-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  opacity: 0; /* Sembunyi secara default */
+  transform: translateX(10px); /* Geser dikit ke kanan */
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto; /* Dorong otomatis ke ujung kanan */
+}
+
+/* Tampilkan tombol HANYA saat notifikasi di-hover */
+.zen-notif-item:hover .zen-notif-close {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Efek saat tombol X itu sendiri di-hover */
+.zen-notif-close:hover {
+  background: #FEE2E2;
+  color: #EF4444; /* Merah untuk bahaya/hapus */
+}
+
+[data-theme="dark"] .zen-notif-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* Animasi ketika item dihapus (Menciut & Hilang) */
+.zen-notif-item.removing {
+  animation: slideOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none; /* Cegah diklik saat sedang menghilang */
+}
+
+@keyframes slideOutRight {
+  0% { opacity: 1; transform: translateX(0); height: auto; padding: 12px 14px; margin-bottom: 0; }
+  100% { opacity: 0; transform: translateX(30px); height: 0; padding: 0 14px; margin-bottom: 0; border: none; }
+}
+
+/* Styling untuk status Kosong */
+.zen-notif-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  animation: fadeDown 0.4s ease;
+}
+.zen-notif-empty .empty-icon { font-size: 28px; margin-bottom: 8px; filter: grayscale(0.4); }
+.zen-notif-empty .empty-text { font-size: 12.5px; line-height: 1.5; font-weight: 500; }
+
+/* LOGIN PAGE - OVERLAY HELPERS (moved from inline styles) */
+.login-map-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+.login-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.tactical-grid-overlay.login-overlay { z-index: 1; }
+.radar-sweep.login-overlay { z-index: 2; pointer-events: none; top: 50%; left: 50%; width: 150vw; height: 150vw; transform: translate(-50%, -50%); }
+.login-left-content { position: relative; z-index: 3; }
+.login-left-footer { position: relative; z-index: 3; }
+/* ==========================================================
+   SKELETON UI (SHIMMERING SLATE EFFECT)
+   ========================================================== */
+.skeleton-box {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--border); /* Abu-abu dasar dari tema Anda */
+  border-radius: var(--radius-sm);
+  z-index: 1;
+}
+
+/* Gelombang Cahaya (Shimmer) */
+.skeleton-box::after {
+  content: "";
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 20%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer-slate 1.5s infinite cubic-bezier(0.4, 0.0, 0.2, 1);
+  z-index: 2;
+}
+
+@keyframes shimmer-slate {
+  100% { transform: translateX(100%); }
+}
+
+/* Variasi Cetakan Rangka Tabel */
+.skel-text { height: 14px; width: 100%; }
+.skel-text-short { height: 14px; width: 60%; }
+.skel-badge { height: 22px; width: 90px; border-radius: 20px; }
+.skel-code { height: 18px; width: 120px; border-radius: 4px; background-color: var(--bg); }
+/* ==========================================================
+   INTERAKTIF DROPZONE (DRAG & DROP)
+   ========================================================== */
+.dropzone-wrapper {
+  position: relative;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 24px 20px;
+  text-align: center;
+  background: var(--bg);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.dropzone-wrapper:hover {
+  border-color: var(--text-muted);
+  background: var(--surface);
+}
+
+/* State saat file diseret di atasnya */
+.dropzone-wrapper.dragover {
+  border-color: #3B82F6; /* Warna biru aktif */
+  background: #EFF6FF;
+  transform: scale(1.02);
+}
+
+.dropzone-wrapper input[type="file"] {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0; /* Sembunyikan input aslinya */
+  cursor: pointer;
+  z-index: 10;
+}
+
+.dropzone-content {
+  position: relative;
+  z-index: 5;
+  pointer-events: none; /* Agar klik tembus ke input file di belakangnya */
+}
+
+.dropzone-file-name {
+  font-size: 13px; 
+  font-weight: 700; 
+  color: var(--text); 
+  margin-top: 8px;
+  word-break: break-all;
+}
+/* ==========================================================
+   DARK MODE THEME (#0D0D0D, #1a1c1e, #CCFF00)
+   ========================================================== */
+/* Transisi mulus saat berganti tema */
+body, .card, .topbar, .sidebar, .form-control, .btn {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Variabel khusus Dark Mode */
+[data-theme="dark"] {
+  --bg: #0D0D0D;            /* Latar belakang utama: Hitam pekat */
+  --surface: #1a1c1e;       /* Permukaan kartu/panel: Abu-abu gelap */
+  --border: #2A2D30;        /* Garis batas: Halus dan gelap */
+  
+  --text: #F8FAFC;          /* Teks utama: Putih terang */
+  --text-sub: #CBD5E1;      /* Teks sub: Abu-abu terang */
+  --text-muted: #8B9BB4;    /* Teks redup */
+  
+  --white: #1a1c1e;         /* Elemen yang tadinya putih menjadi warna surface */
+  --black: #CCFF00;         /* Elemen yang tadinya hitam pekat menjadi Neon */
+}
+
+/* Override spesifik agar layout tidak rusak */
+[data-theme="dark"] .sidebar {
+  background: #050505;
+  border-right: 1px solid var(--border);
+}
+
+[data-theme="dark"] .topbar {
+  background: rgba(26, 28, 30, 0.85); /* #1a1c1e transparan untuk efek blur */
+}
+
+[data-theme="dark"] .card, 
+[data-theme="dark"] .step-content, 
+[data-theme="dark"] .modal {
+  background: var(--surface);
+}
+
+/* Modifikasi Tombol Aksen Neon */
+[data-theme="dark"] .btn-primary {
+  background: #CCFF00;
+  color: #0D0D0D;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(204, 255, 0, 0.15);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: #E6FF4D;
+  box-shadow: 0 6px 20px rgba(204, 255, 0, 0.3);
+}
+
+/* Penyesuaian Input Form */
+[data-theme="dark"] .form-control, 
+[data-theme="dark"] .search-box {
+  background: #0D0D0D;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .form-control:focus {
+  border-color: #CCFF00;
+  box-shadow: 0 0 0 4px rgba(204, 255, 0, 0.1);
+}
+
+/* Penyesuaian Tabel & Badge */
+[data-theme="dark"] .data-table tr:hover td {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .badge-admin {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+/* ==========================================================
+   DARK MODE: SIDEBAR FULL NEON (CYBERPUNK STYLE)
+   ========================================================== */
+/* Mengubah warna dasar seluruh teks sidebar menjadi varian Neon */
+[data-theme="dark"] .sidebar {
+  color: rgba(204, 255, 0, 0.7); /* Neon redup sebagai default */
+}
+
+/* 1. Header & Judul Aplikasi (Glow Effect) */
+[data-theme="dark"] .brand-title {
+  color: #CCFF00;
+  text-shadow: 0 0 12px rgba(204, 255, 0, 0.5); /* Efek cahaya menyala */
+}
+[data-theme="dark"] .brand-title em {
+  color: rgba(204, 255, 0, 0.6);
+}
+[data-theme="dark"] .brand-sub {
+  color: rgba(204, 255, 0, 0.5);
+}
+
+/* 2. Lencana / Badge Brand di Kiri Atas */
+[data-theme="dark"] .brand-badge {
+  background: rgba(204, 255, 0, 0.1);
+  border: 1px solid rgba(204, 255, 0, 0.3);
+  color: #CCFF00;
+}
+[data-theme="dark"] .brand-dot {
+  background: #CCFF00;
+  box-shadow: 0 0 8px #CCFF00;
+}
+[data-theme="dark"] .brand-dot svg {
+  color: #0D0D0D !important; /* Icon di dalam dot menjadi hitam pekat */
+}
+
+/* 3. Label Kategori Menu (Utama, Sistem, dll) */
+[data-theme="dark"] .nav-section-label {
+  color: rgba(204, 255, 0, 0.4);
+}
+
+/* 4. Menu Item Biasa */
+[data-theme="dark"] .nav-item {
+  color: rgba(204, 255, 0, 0.65);
+}
+[data-theme="dark"] .nav-item svg {
+  opacity: 0.8;
+  color: currentColor;
+}
+
+/* 5. Menu Item Hover & Aktif (Menyala Terang) */
+[data-theme="dark"] .nav-item:hover, 
+[data-theme="dark"] .nav-item.active {
+  background: rgba(204, 255, 0, 0.08); /* Latar belakang neon sangat tipis */
+  color: #CCFF00;
+  text-shadow: 0 0 8px rgba(204, 255, 0, 0.4);
+}
+[data-theme="dark"] .nav-item.active::before {
+  background: #CCFF00;
+  box-shadow: 0 0 10px #CCFF00; /* Garis indikator di kiri menyala */
+}
+
+/* 6. Angka Badge pada Menu (Misal: 0 pada Cacat Administrasi) */
+[data-theme="dark"] .nav-badge {
+  background: rgba(204, 255, 0, 0.15);
+  color: #CCFF00;
+  border: 1px solid rgba(204, 255, 0, 0.3);
+}
+[data-theme="dark"] .nav-item.active .nav-badge {
+  background: #CCFF00;
+  color: #0D0D0D;
+  box-shadow: 0 0 8px rgba(204, 255, 0, 0.6);
+}
+
+/* 7. Footer Sidebar (Kantor Wilayah BPN...) */
+[data-theme="dark"] .sidebar-footer {
+  color: rgba(204, 255, 0, 0.3);
+  border-top: 1px solid rgba(204, 255, 0, 0.1);
+}
+
+/* Opsional: Garis pemisah di bawah judul aplikasi */
+[data-theme="dark"] .sidebar-brand {
+  border-bottom: 1px solid rgba(204, 255, 0, 0.1);
+}
+/* ==========================================================
+   THE DIGITAL VAULT & DOSSIER VIEW
+   ========================================================== */
+
+/* Nuansa Header Vault yang lebih elegan dan 'diam' */
+.vault-header h1 { color: var(--gray-dark); }
+.vault-header p { color: var(--text-muted); opacity: 0.8; }
+
+/* Tabel Vault: Tampilan grayscale untuk data lama */
+.vault-card {
+  border: 1px solid var(--border);
+  box-shadow: inset 0 0 40px rgba(15, 23, 42, 0.02);
+}
+.vault-table td {
+  color: var(--text-sub); /* Teks lebih redup */
+}
+.vault-table tr:hover td {
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* Layout Split Screen untuk Dossier */
+.dossier-layout {
+  display: grid;
+  grid-template-columns: 4fr 5fr; /* 40% kiri, 60% kanan */
+  gap: 24px;
+  align-items: start;
+}
+
+/* Kertas Dossier */
+.dossier-paper {
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+}
+
+/* Stempel Animasi "SELESAI" */
+.dossier-stamp {
+  position: absolute;
+  top: 30px;
+  right: -20px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #10B981;
+  border: 4px solid #10B981;
+  padding: 4px 16px;
+  border-radius: 8px;
+  transform: rotate(-15deg) scale(2);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+  /* Animasi mengecap (stamping) */
+  animation: stamp-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s forwards;
+}
+
+.dossier-stamp.rejected {
+  color: #EF4444;
+  border-color: #EF4444;
+}
+
+@keyframes stamp-in {
+  0% { transform: rotate(-25deg) scale(3); opacity: 0; }
+  100% { transform: rotate(-15deg) scale(1); opacity: 0.8; } /* Opacity diturunkan agar seperti tinta */
+}
+
+/* Bikin Audit Trail di Arsip jadi abu-abu (Read-Only Feel) */
+.grayscale-audit .audit-dot {
+  border-color: var(--text-muted);
+}
+.grayscale-audit .audit-content {
+  background: var(--bg);
+}
+
+/* Penyesuaian Dark Mode */
+[data-theme="dark"] .vault-header h1 { color: var(--text-muted); }
+[data-theme="dark"] .dossier-stamp { opacity: 0.5 !important; }
+[data-theme="dark"] .vault-card { box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.2); }
+
+@media (max-width: 900px) {
+  .dossier-layout { grid-template-columns: 1fr; }
+  .dossier-right iframe { min-height: 400px; }
+}

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIPENTAS — BPN NTB · Bidang Pengendalian & Penanganan Sengketa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="login-container" style="display: none;">
+  <div class="login-left">
+    <div id="login-map-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;"></div>
+    
+    <div class="tactical-grid-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></div>
+
+    <div class="radar-sweep" style="position: absolute; top: 50%; left: 50%; width: 150vw; height: 150vw; z-index: 2; pointer-events: none;"></div>
+
+    <div class="login-left-content" style="z-index: 3;">
+      <h1 style="text-shadow: 0 0 20px rgba(255,255,255,0.3);">Sistem<br>Informasi<br><em>Pengendalian &amp;<br>Penanganan Sengketa</em></h1>
+      <p>Portal manajemen data pembatalan hak atas tanah terpadu untuk Kanwil BPN Provinsi Nusa Tenggara Barat.</p>
+    </div>
+    <div class="login-left-footer" style="z-index: 3;">Dilindungi oleh sistem otentikasi internal BPN<br>Akses Terbatas</div>
+  </div>
+  
+  <div class="login-right">
+    <div class="login-form-box">
+      <div class="login-brand">
+        <div class="login-brand-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;"><circle cx="12" cy="12" r="8"/></svg>
+        </div>
+        <div class="login-brand-text">
+          <h2>SIPENTAS</h2>
+          <p>Kanwil BPN Provinsi NTB</p>
+        </div>
+      </div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group" style="margin-bottom:16px">
+          <label for="l-username">Nama Pengguna (NIP/ID)</label>
+          <input type="text" id="l-username" class="form-control" placeholder="admin" required>
+        </div>
+        <div class="form-group" style="margin-bottom:20px">
+          <label for="l-password">Kata Sandi</label>
+          <div class="pw-wrapper">
+            <input type="password" id="l-password" class="form-control" placeholder="admin123" required>
+            <button type="button" class="pw-toggle" onclick="togglePassword()">
+              <svg id="pw-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" style="font-size:14px; padding:12px;">Masuk ke Sistem</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="app-container" style="display:none;">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-badge"><div class="brand-dot"><svg viewBox="0 0 24 24" fill="currentColor" style="color:#050505"><circle cx="12" cy="12" r="5"/></svg></div><span>BPN · NTB</span></div><div class="brand-title">SIPENTAS<em>.</em></div><div class="brand-sub">Sistem Informasi Pengendalian &amp;<br>Penanganan Sengketa</div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Utama</div>
+      <div class="nav-item active" onclick="navigateTo('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Dashboard</div>
+      <div class="nav-section-label" style="margin-top:8px">Permohonan Pembatalan</div>
+      <div class="nav-item" onclick="navigateTo('list-semua')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> Semua Berkas</div>
+      <div class="nav-section-label" style="margin-top:8px">Penyimpanan</div>
+      <div class="nav-item" onclick="navigateTo('arsip')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="14" rx="2" ry="2"></rect><line x1="12" y1="12" x2="12" y2="14"></line><path d="M4 8v-2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2"></path></svg> 
+        Arsip Digital
+      </div>
+      <div class="nav-item" onclick="navigateTo('list-cacat')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Cacat Administrasi <span class="nav-badge" id="badge-cacat">0</span></div>
+      <div class="nav-item" onclick="navigateTo('list-putusan')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Putusan Pengadilan <span class="nav-badge" id="badge-putusan">0</span></div>
+      <div class="nav-item" onclick="navigateTo('tambah')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Tambah Permohonan</div>
+      <div class="nav-section-label" style="margin-top:8px">Sistem</div>
+      <div class="nav-item" onclick="navigateTo('pengaturan')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Pengaturan</div>
+    </nav>
+    <div class="sidebar-footer">Kantor Wilayah BPN<br>Provinsi Nusa Tenggara Barat</div>
+  </aside>
+
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <button class="universal-back-btn" id="universal-back" onclick="goBackUniversal()">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          <span>Kembali</span>
+        </button>
+        <div class="page-crumb" id="page-crumb">Beranda / <span id="page-crumb-text">Dashboard</span></div>
+      </div>
+
+      <div class="topbar-right">
+        <button id="theme-toggle" class="btn-ghost" onclick="toggleTheme()" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px;">
+          <svg id="icon-moon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <svg id="icon-sun" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
+        
+        <div class="dropdown">
+          <div class="user-chip" onclick="toggleUserMenu(event)">
+            <div class="user-avatar has-notif" id="topbar-avatar-container">
+                <img id="topbar-avatar-img" src="" alt="Profile" style="display:none; width:100%; height:100%; object-fit:cover;">
+                <span id="topbar-avatar-initials">AD</span>
+            </div>
+            <span class="user-name" id="topbar-user-name">Admin Kanwil</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="margin-left:4px; opacity:0.5;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          
+          <div class="dropdown-menu zen-dropdown" id="user-dropdown">
+            <div class="zen-dropdown-header">
+              <span class="zen-title">Notifikasi Terkini</span>
+              <button class="zen-clear-btn" onclick="clearZenNotifs(event)">Tandai Dibaca</button>
+            </div>
+            
+            <div class="zen-notif-list" id="zen-notif-list">
+          
+          <div class="zen-notif-item unread" onclick="navigateTo('list-cacat')">
+            <div class="zen-notif-dot" style="background: var(--neon-green);"></div>
+            <div class="zen-notif-content">
+              <div class="zen-notif-title">Usulan Baru Masuk</div>
+              <div class="zen-notif-desc">1 Berkas Cacat Administrasi dari Kantah Lombok Tengah</div>
+              <div class="zen-notif-time">Baru saja</div>
+            </div>
+            <button class="zen-notif-close" onclick="deleteZenNotif(event, this)" title="Hapus Notifikasi">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+          
+          <div class="zen-notif-item unread" onclick="navigateTo('dashboard')">
+            <div class="zen-notif-dot" style="background: var(--neon-green);"></div>
+            <div class="zen-notif-content">
+              <div class="zen-notif-title">Jadwal Gelar Kasus</div>
+              <div class="zen-notif-desc">Mengingatkan jadwal gelar kasus No. 045/CA/LOTIM besok pagi.</div>
+              <div class="zen-notif-time">2 Jam yang lalu</div>
+            </div>
+            <button class="zen-notif-close" onclick="deleteZenNotif(event, this)" title="Hapus Notifikasi">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+
+          <div class="zen-notif-empty" id="zen-notif-empty" style="display: none;">
+            <div class="empty-icon">☕</div>
+            <div class="empty-text">Semua beres!<br>Waktunya ngopi.</div>
+          </div>
+
+        </div>
+            
+            <div class="zen-divider"></div>
+            
+            <a class="dropdown-item" href="javascript:void(0)" onclick="navigateTo('pengaturan')"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Pengaturan Profil</a>
+            <button class="dropdown-item danger" onclick="logout()"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Keluar / Log Out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page" id="page-arsip">
+        <div class="page-header vault-header">
+          <h1>Brankas <em>Arsip</em></h1>
+          <p>Penyimpanan permanen untuk seluruh berkas sengketa yang telah selesai dan ditutup.</p>
+        </div>
+        <div class="search-row" style="justify-content: flex-end; gap: 12px;">
+          <div class="search-box" style="width: 300px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px; color: var(--text-muted);"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="search-arsip" placeholder="Cari arsip berdasarkan No. Registrasi..." oninput="renderArsip()">
+          </div>
+          <button class="btn btn-secondary" style="border-color: var(--border); color: var(--text-sub);">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+            Filter Lanjutan
+          </button>
+        </div>
+        <div class="card vault-card">
+          <div class="scrollable">
+            <table class="data-table vault-table">
+              <thead>
+                <tr>
+                  <th>No. Registrasi</th>
+                  <th>Jenis</th>
+                  <th>Kantah</th>
+                  <th>Pemohon</th>
+                  <th>Tgl. Selesai</th>
+                  <th>Status Akhir</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-arsip"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-dossier">
+        <div class="dossier-layout">
+          <div class="dossier-left">
+            <div class="card dossier-paper" style="position: relative; overflow: hidden;">
+              <div class="dossier-stamp" id="dossier-stamp">SELESAI</div>
+              <div class="card-body">
+                <div style="font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px;">DOSSIER ARSIP DIGITAL</div>
+                <h2 id="ds-nomor" style="font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 24px;">-</h2>
+                
+                <div class="info-grid full" style="margin-bottom: 24px; gap: 12px; border-bottom: 1px dashed var(--border); padding-bottom: 24px;">
+                  <div class="info-item"><label>Pemohon</label><span id="ds-pemohon" style="font-weight: 600;">-</span></div>
+                  <div class="info-item"><label>Objek Sengketa</label><span id="ds-objek">-</span></div>
+                  <div class="info-item"><label>Waktu Penyelesaian</label><span id="ds-durasi">-</span></div>
+                </div>
+
+                <h3 style="font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 16px;">Jejak Audit Final (Read-Only)</h3>
+                <div class="audit-timeline grayscale-audit" id="ds-audit">
+                  </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dossier-right">
+            <div class="card" style="height: 100%; display: flex; flex-direction: column;">
+              <div class="card-header" style="background: var(--surface);">
+                <span class="card-title">Dokumen Putusan Final (SK)</span>
+                <button class="btn btn-secondary btn-sm" onclick="openModal('modal-pdf-viewer')">Perbesar Layar</button>
+              </div>
+              <div class="card-body" style="flex: 1; padding: 0; background: #E8E8E8;">
+                <iframe id="ds-pdf-iframe" style="width: 100%; height: 100%; border: none; min-height: 600px;"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div class="header-title-row">
+            <div>
+              <h1 id="dynamic-greeting">Selamat Datang<em>,</em> di SIPENTAS</h1>
+              <p>Sistem Informasi Pengendalian &amp; Penanganan Sengketa — Kanwil BPN NTB</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="unified-stats-panel">
+          <div class="stat-segment clickable-stat" onclick="scrollToRecent()" title="Gulir ke Permohonan Terkini">
+            <div class="stat-indicator" style="background: #3B82F6; box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);"></div>
+            <div class="stat-info">
+              <div class="stat-title">Total Permohonan</div>
+              <div class="stat-angka" id="stat-total">0</div>
+            </div>
+          </div>
+          
+          <div class="stat-divider"></div>
+          
+          <div class="stat-segment center-segment clickable-stat" onclick="navigateTo('list-cacat')" title="Buka Daftar Cacat Administrasi">
+            <div class="stat-indicator" style="background: #00b0be; box-shadow: 0 0 12px rgba(100, 116, 139, 0.4);"></div>
+            <div class="stat-info">
+              <div class="stat-title">Cacat Administrasi</div>
+              <div class="stat-angka" id="stat-cacat">0</div>
+            </div>
+          </div>
+          
+          <div class="stat-divider"></div>
+          
+          <div class="stat-segment center-segment clickable-stat" onclick="navigateTo('list-putusan')" title="Buka Daftar Putusan Pengadilan">
+            <div class="stat-indicator" style="background: #eddca5; box-shadow: 0 0 12px rgba(5, 150, 105, 0.4);"></div>
+            <div class="stat-info">
+              <div class="stat-title">Putusan Pengadilan</div>
+              <div class="stat-angka" id="stat-putusan">0</div>
+            </div>
+          </div>
+          
+          <div class="stat-divider"></div>
+          
+          <div class="stat-segment right-segment clickable-stat" onclick="navigateAndFilterSelesai()" title="Lihat Berkas yang Telah Selesai">
+            <div class="stat-indicator" style="background: #10B981; box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);"></div>
+            <div class="stat-info">
+              <div class="stat-title">Selesai / Ditutup</div>
+              <div class="stat-angka" id="stat-selesai">0</div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Peta Sebaran Permohonan Pembatalan</span></div>
+            <div class="card-body" style="position:relative; height:320px; padding:0; z-index:1; overflow:hidden;">
+              <button id="btn-map-back" class="map-back-btn" onclick="resetMapView()" style="display: none;">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Kembali ke Skala NTB
+              </button>
+              
+              <div id="mapNTB" style="width:100%; height:100%;"></div>
+            </div>
+          </div>
+          
+          <div class="card"><div class="card-header"><span class="card-title">Jenis Pembatalan</span></div><div class="card-body" style="position:relative; height:320px; display:flex; justify-content:center; align-items:center;"><canvas id="typeChart"></canvas></div></div>
+        </div>
+        
+        <div class="dashboard-grid">
+          <div class="dashboard-main">
+            <div class="card">
+              <div class="card-header" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+  <span class="card-title">Permohonan Terkini</span>
+  <div style="display: flex; gap: 8px; align-items: center;">
+    <div class="search-box" style="height: 32px; min-width: 240px; padding: 0 12px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px; color: var(--text-muted);"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Cari No. Berkas / Pemohon..." id="dashboard-search" oninput="renderDashboard()" style="font-size: 12px; padding: 0;">
+    </div>
+<button class="card-action" onclick="navigateTo('list-semua')">Lihat Semua</button>
+</div>
+</div>
+              <div class="scrollable"><table class="data-table"><thead><tr><th>No. Berkas</th><th>Pemohon</th><th>Jenis</th><th>Kantah</th><th>Status</th></tr></thead><tbody id="recent-cases-tbody"></tbody></table></div>
+            </div>
+          </div>
+          
+          <div class="dashboard-sidebar" style="display:flex; flex-direction:column; gap:20px;">
+            <div class="calendar-card-compact">
+              <div class="timeline-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 0 4px;">
+                
+                <div class="timeline-title-group">
+                  <span id="timeline-month-text" class="timeline-month-text">Bulan</span> 
+                  <span id="timeline-year-text" class="timeline-year-badge">Tahun</span> 
+                </div>
+                
+                <div style="display: flex; gap: 6px;">
+                  <button class="btn-timeline-nav" onclick="changeCalMonth(-1)" title="Bulan Sebelumnya">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  </button>
+                  <button class="btn-timeline-nav" onclick="changeCalMonth(1)" title="Bulan Selanjutnya">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="timeline-wrapper" id="timeline-wrapper">
+                <div class="timeline-track" id="timeline-track">
+                  </div>
+              </div>
+            </div>
+              
+              </div> </div> </div> <div class="page" id="page-list-cacat">
+        <div class="page-header">
+          <h1>Cacat <em>Administrasi</em></h1>
+          <p>Daftar permohonan pembatalan berdasarkan cacat administrasi</p>
+        </div>
+        <div class="search-row" style="justify-content: flex-end; gap: 12px;">
+          <select class="filter-select" id="filter-status-cacat" onchange="renderTable('cacat')">
+            <option value="">Semua Tahapan</option><option value="0">Usulan Masuk</option><option value="1">Telaah Staff</option><option value="2">Penelitian Lapang</option><option value="3">Gelar Kasus</option><option value="4">Penerbitan SK</option><option value="5">Selesai / Ditutup</option>
+          </select>
+          <button class="btn btn-excel" onclick="exportToExcel('cacat')">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Unduh Excel
+          </button>
+        </div>
+        <div class="card"><div class="scrollable"><table class="data-table"><thead><tr><th>No. Registrasi</th><th>Kantah</th><th>Pemohon</th><th>No. Surat</th><th>Desa/Kecamatan</th><th>Tgl. Usulan</th><th>Status</th><th>Progress</th><th>Aksi</th></tr></thead><tbody id="tbody-cacat"></tbody></table></div></div>
+      </div>
+
+      <div class="page" id="page-list-putusan">
+        <div class="page-header"><h1>Putusan <em>Pengadilan</em></h1><p>Daftar permohonan pembatalan berdasarkan putusan pengadilan inkracht</p></div>
+        <div class="search-row" style="justify-content: flex-end; gap: 12px;">
+          <select class="filter-select" id="filter-status-putusan" onchange="renderTable('putusan')">
+            <option value="">Semua Tahapan</option><option value="0">Usulan Masuk</option><option value="1">Telaah Staff</option><option value="2">Penelitian Lapang</option><option value="3">Gelar Kasus</option><option value="4">Penerbitan SK</option><option value="5">Selesai / Ditutup</option>
+          </select>
+          <button class="btn btn-excel" onclick="exportToExcel('putusan')">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Unduh Excel
+          </button>
+        </div>
+        <div class="card"><div class="scrollable"><table class="data-table"><thead><tr><th>No. Registrasi</th><th>Kantah</th><th>Pemohon</th><th>No. Surat</th><th>Desa/Kecamatan</th><th>Tgl. Usulan</th><th>Status</th><th>Progress</th><th>Aksi</th></tr></thead><tbody id="tbody-putusan"></tbody></table></div></div>
+      </div>
+
+      <div class="page" id="page-tambah">
+        <div class="page-header"><h1>Tambah <em>Permohonan</em></h1><p>Input data permohonan pembatalan baru</p></div>
+        <div class="card" style="max-width:820px">
+          <div class="card-header"><span class="card-title">Formulir Permohonan</span></div>
+          <div class="card-body">
+            <div class="tabs" style="margin-bottom:24px"><button type="button" class="tab active" onclick="switchFormTab('info')">Informasi Umum</button><button type="button" class="tab" onclick="switchFormTab('detail')">Detail Objek</button></div>
+            <form id="form-permohonan">
+              <div id="form-tab-info">
+                <div class="form-grid">
+                  <div class="form-group"><label>Nomor Surat Usulan Kantah *</label><input type="text" class="form-control" id="f-nosurat" placeholder="Ketik nomor surat fisik..."></div>
+                  <div class="form-group"><label>Tanggal Surat *</label><input type="date" class="form-control" id="f-tglUsulan"></div>
+                  <div class="form-group"><label>Jenis *</label><select class="form-control" id="f-jenis"><option value="">-- Pilih --</option><option value="cacat">Cacat Administrasi</option><option value="putusan">Putusan Pengadilan</option></select></div>
+                  <div class="form-group"><label>Kantor Pertanahan *</label><select class="form-control" id="f-kantah"><option value="">-- Pilih --</option><option>Kantor Wilayah</option><option>Kota Mataram</option><option>Lombok Barat</option><option>Lombok Tengah</option><option>Lombok Timur</option><option>Lombok Utara</option><option>Sumbawa</option><option>Sumbawa Barat</option><option>Dompu</option><option>Bima</option><option>Kota Bima</option></select></div>
+                  <div class="form-group"><label>Nama Pemohon *</label><input type="text" class="form-control" id="f-pemohon" placeholder="Pihak yang mengajukan..."></div>
+                  <div class="form-group"><label>Nama Termohon</label><input type="text" class="form-control" id="f-termohon" placeholder="Pihak Termohon"></div>
+                  <div class="form-group"><label>Penanggung Jawab Berkas *</label><select class="form-control" id="f-pj"></select></div>
+                  <div class="form-group full form-grid" style="grid-template-columns:1fr 1fr"><div class="form-group" id="f-noputs-group" style="display:none"><label>Nomor Putusan Pengadilan</label><input type="text" class="form-control" id="f-noputs"></div></div>
+                  <div class="form-group full">
+                    <label>Unggah Surat Pengantar / Usulan (PDF) *</label>
+                    <div class="dropzone-wrapper" id="dz-usulan">
+                      <input type="file" id="f-dokumenUsulan" accept="application/pdf" required>
+                      <div class="dropzone-content">
+                        <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none" style="color:var(--text-muted); margin-bottom:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <div style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Klik atau Seret Dokumen ke Sini</div>
+                        <div style="font-size: 11px; color: var(--text-muted);">Hanya mendukung format .PDF (Maks 5MB)</div>
+                        <div class="dropzone-file-name" id="name-usulan"></div>
+                      </div>
+                    </div>
+                  </div>
+              </div></div><div id="form-tab-detail" style="display: none;">
+                <h4 style="font-size: 15px; color: var(--primary); margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">Informasi Kepemilikan & Sertipikat</h4>
+                <div class="form-group full" style="margin-bottom: 24px;">
+                  <label>Nama Pemegang Hak *</label>
+                  <input type="text" class="form-control" id="f-pemeganghak" placeholder="Contoh: H. Ahmad Zainudin (Sesuai yang tertera di sertipikat)">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 16px; margin-bottom: 20px;">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label>Jenis Hak *</label>
+                    <select class="form-control" id="f-jenissert">
+                      <option value="Hak Milik">Hak Milik (HM)</option><option value="Hak Guna Bangunan">Hak Guna Bangunan (HGB)</option><option value="Hak Pakai">Hak Pakai (HP)</option><option value="Hak Guna Usaha">Hak Guna Usaha (HGU)</option><option value="Hak Pengelolaan">Hak Pengelolaan (HPL)</option>
+                    </select>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;"><label>Nomor Sertipikat *</label><input type="text" class="form-control" id="f-nosert" placeholder="Contoh: 00123"></div>
+                  <div class="form-group" style="margin-bottom: 0;"><label>Luas (m²) *</label><input type="text" class="form-control" id="f-luas" oninput="formatRibuan(this)" placeholder="15.000"></div>
+                </div>
+                <h4 style="font-size: 15px; color: var(--primary); margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-top: 24px;">Letak Objek Tanah</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                  <div class="form-group" style="margin-bottom: 0;"><label>Kabupaten / Kota *</label><select class="form-control" id="f-kabupaten" onchange="handleKabupatenChange()"><option value="">-- Pilih --</option></select></div>
+                  <div class="form-group" style="margin-bottom: 0;"><label>Kecamatan *</label><select class="form-control" id="f-kecamatan" onchange="handleKecamatanChange()" disabled><option value="">-- Pilih --</option></select></div>
+                  <div class="form-group" style="margin-bottom: 0;"><label>Desa / Kelurahan *</label><select class="form-control" id="f-desa" disabled><option value="">-- Pilih --</option></select></div>
+                </div>
+                <h4 style="font-size: 15px; color: var(--primary); margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-top: 24px;">Dokumen Pendukung</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                  <div class="form-group full">
+                    <label>Unggah Scan Buku Tanah / Sertipikat (PDF) *</label>
+                    <div class="dropzone-wrapper" id="dz-bukutanah">
+                      <input type="file" id="f-dokumenbt" accept="application/pdf" required>
+                      <div class="dropzone-content">
+                        <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none" style="color:var(--text-muted); margin-bottom:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <div style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Klik atau Seret Dokumen ke Sini</div>
+                        <div style="font-size: 11px; color: var(--text-muted);">Hanya mendukung format .PDF (Maks 5MB)</div>
+                        <div class="dropzone-file-name" id="name-bukutanah"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group full" style="margin-bottom: 0;"><label>Uraian / Catatan Singkat Permohonan</label><textarea class="form-control" id="f-uraian" rows="2" placeholder="Tuliskan catatan tambahan jika ada..."></textarea></div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn btn-secondary" onclick="navigateTo('dashboard')">Batal</button><button type="button" class="btn btn-secondary" id="btn-prev-tab" style="display:none" onclick="prevFormTab()">Kembali</button><button type="button" class="btn btn-primary" id="btn-next-tab" onclick="nextFormTab()">Lanjut</button><button type="button" class="btn btn-primary" id="btn-submit" style="display:none" onclick="submitForm(event)">Simpan Data</button></div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="page" id="page-list-semua">
+        <div class="page-header">
+          <h1>Semua <em>Permohonan</em></h1>
+          <p>Master data seluruh permohonan pembatalan (Cacat Administrasi & Putusan Pengadilan)</p>
+        </div>
+        <div class="search-row" style="justify-content: flex-end; gap: 12px;">
+          <select class="filter-select" id="filter-jenis-semua" onchange="renderTable('semua')">
+            <option value="">Semua Jenis Sengketa</option>
+            <option value="cacat">Cacat Administrasi</option>
+            <option value="putusan">Putusan Pengadilan</option>
+          </select>
+          <select class="filter-select" id="filter-status-semua" onchange="renderTable('semua')">
+            <option value="">Semua Tahapan</option>
+            <option value="0">Usulan Masuk</option>
+            <option value="1">Telaah Staff</option>
+            <option value="2">Penelitian Lapang</option>
+            <option value="3">Gelar Kasus Akhir</option>
+            <option value="4">Penerbitan SK</option>
+            <option value="pending">Tertunda (Dikembalikan)</option>
+            <option value="rejected">Ditolak</option>
+            <option value="5">Selesai / Ditutup</option>
+          </select>
+          <button class="btn btn-excel" onclick="exportToExcel('semua')">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Unduh Excel
+          </button>
+        </div>
+        <div class="card">
+          <div class="scrollable">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No. Registrasi</th>
+                  <th>Jenis</th> <th>Kantah</th>
+                  <th>Pemohon</th>
+                  <th>No. Surat</th>
+                  <th>Desa/Kecamatan</th>
+                  <th>Tgl. Usulan</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-semua"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="page" id="page-detail">
+        <div class="form-tabs">
+          <div id="detail-content"></div>
+        </div>
+      </div>
+
+      <div class="page" id="page-pengaturan">
+        <div class="page-header">
+          <h1>Pengaturan <em>Akun</em></h1>
+          <p>Kelola profil pengguna, preferensi, dan keamanan akun Anda</p>
+        </div>
+        <div class="settings-grid">
+          <div style="display:flex; flex-direction:column; gap:24px;">
+            <div class="card">
+              <div class="card-header"><span class="card-title">Foto Profil</span></div>
+              <div class="card-body" style="text-align:center;">
+                <div style="width:130px; height:130px; border-radius:50%; background:var(--surface); margin:0 auto 16px; display:flex; align-items:center; justify-content:center; border:2px dashed var(--border); overflow:hidden; position:relative;">
+                  <img id="profile-preview-img" src="" alt="Preview" style="width:100%; height:100%; object-fit:cover; display:none;">
+                  <span id="profile-preview-initials" style="font-family:'Syne',sans-serif; font-size:36px; font-weight:700; color:var(--text-muted);">AD</span>
+                </div>
+                <input type="file" id="upload-avatar" accept="image/jpeg, image/png" style="display:none" onchange="handleAvatarUpload(event)">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('upload-avatar').click()">Ganti Foto</button>
+                <p style="font-size:11px; color:var(--text-muted); margin-top:12px;">Format JPG/PNG. Maks 2MB.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="card-title">Ubah Kata Sandi</span></div>
+              <div class="card-body">
+                <form onsubmit="handleUbahSandi(event)">
+                  <div class="form-group" style="margin-bottom:14px"><label>Sandi Lama</label><input type="password" id="s-old-pass" class="form-control" required></div>
+                  <div class="form-group" style="margin-bottom:14px"><label>Sandi Baru</label><input type="password" id="s-new-pass" class="form-control" required></div>
+                  <div class="form-group" style="margin-bottom:20px"><label>Konfirmasi Sandi Baru</label><input type="password" id="s-confirm-pass" class="form-control" required></div>
+                  <button type="submit" class="btn btn-primary btn-full">Perbarui Sandi</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="height:fit-content;">
+            <div class="card-header"><span class="card-title">Informasi Data Diri</span></div>
+            <div class="card-body">
+              <form onsubmit="handleSimpanProfil(event)">
+                <div class="form-grid">
+                  <div class="form-group full"><label>Nama Lengkap</label><input type="text" id="p-nama" class="form-control" value="Admin Kanwil" required></div>
+                  <div class="form-group"><label>NIP</label><input type="text" id="p-nip" class="form-control" value="198001012005011001" required></div>
+                  <div class="form-group"><label>Jabatan</label><input type="text" id="p-jabatan" class="form-control" value="Administrator Sistem"></div>
+                  <div class="form-group"><label>Alamat Email</label><input type="email" id="p-email" class="form-control" value="admin.ntb@atrbpn.go.id" required></div>
+                  <div class="form-group"><label>Nomor Handphone</label><input type="text" id="p-hp" class="form-control" value="081234567890"></div>
+                </div>
+                <div class="divider"></div>
+                <div style="display:flex; justify-content:flex-end;">
+                  <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-success-generate">
+  <div class="modal" style="max-width: 400px; text-align: center; padding: 32px 24px;">
+    <div style="width: 64px; height: 64px; background: #E8F5E9; color: #1B5E20; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+      <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="3" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <h2 style="font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 8px;">Berhasil Disimpan!</h2>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height:1.6;">Silakan catat Nomor Registrasi Sistem berikut pada map fisik berkas Anda:</p>
+    <div style="background: var(--surface); border: 2px dashed var(--black); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+      <span id="success-no" style="font-size: 20px; font-weight: 700; color: var(--black); letter-spacing: 1px;"></span>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="closeSuccessModal()">Tutup & Kembali ke Daftar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-agenda-compact">
+  <div class="modal" style="max-width: 420px;">
+    <div class="modal-header">
+      <div class="modal-title" id="agenda-modal-title" style="font-size: 18px;">Agenda Kegiatan</div>
+      <button class="modal-close" onclick="closeModal('modal-agenda-compact')">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div id="agenda-modal-list"></div>
+      <div class="divider" style="margin: 16px 0;"></div>
+      <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--black); font-family: 'Syne', sans-serif;">Tambah Agenda Baru</h4>
+      <form id="form-add-agenda" onsubmit="handleSaveAgenda(event)">
+        <input type="hidden" id="agenda-date-input">
+        <input type="hidden" id="agenda-id-input">
+        
+        <div class="form-group" style="margin-bottom:12px;">
+          <label>Nama Kegiatan *</label>
+          <input type="text" id="agenda-title" class="form-control" placeholder="Contoh: Gelar Kasus / Peninjauan Lapang" required>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 12px; margin-bottom: 20px;">
+          <div class="form-group" style="margin-bottom:0;">
+  <label>Waktu *</label>
+  <select id="agenda-time" class="form-control" required style="cursor: pointer;">
+    <option value="08:00">08:00 WITA</option>
+    <option value="08:30">08:30 WITA</option>
+    <option value="09:00">09:00 WITA</option>
+    <option value="09:30">09:30 WITA</option>
+    <option value="10:00">10:00 WITA</option>
+    <option value="10:30">10:30 WITA</option>
+    <option value="11:00">11:00 WITA</option>
+    <option value="11:30">11:30 WITA</option>
+    <option value="13:00">13:00 WITA</option>
+    <option value="13:30">13:30 WITA</option>
+    <option value="14:00">14:00 WITA</option>
+    <option value="14:30">14:30 WITA</option>
+    <option value="15:00">15:00 WITA</option>
+    <option value="15:30">15:30 WITA</option>
+    <option value="16:00">16:00 WITA</option>
+    <option value="16:30">16:30 WITA</option>
+    <option value="17:00">17:00 WITA</option>
+  </select>
+</div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Terkait Berkas (Opsional)</label>
+            <select id="agenda-berkas" class="form-control">
+              <option value="">-- Pilih Berkas --</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" id="btn-submit-agenda" class="btn btn-primary btn-full">Simpan Agenda</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-upload-tambahan">
+  <div class="modal" style="max-width: 450px;">
+    <div class="modal-header">
+      <div class="modal-title" style="font-size: 18px;">Unggah Dokumen Tambahan</div>
+      <button type="button" class="modal-close" onclick="closeModal('modal-upload-tambahan')">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="form-upload-tambahan" onsubmit="saveDokumenTambahan(event)">
+        <input type="hidden" id="upload-tambahan-id">
+        
+        <div class="form-group full" style="margin-bottom: 16px;">
+          <label>Nama Dokumen *</label>
+          <input type="text" id="tambahan-doc-name" class="form-control" placeholder="Contoh: Surat Kuasa, Berita Acara Mediasi..." required>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Beri nama yang jelas agar mudah dicari nantinya.</div>
+        </div>
+        
+        <div class="form-group full" style="margin-bottom: 24px;">
+          <label>Pilih File (PDF) *</label>
+          <div style="border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 24px 20px; text-align: center; background: var(--bg); transition: all 0.2s ease; cursor: pointer;" onmouseover="this.style.borderColor='var(--black)'; this.style.backgroundColor='var(--surface)';" onmouseout="this.style.borderColor='var(--border)'; this.style.backgroundColor='var(--bg)';">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none" style="color:var(--text-muted); margin-bottom:12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <div style="font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px;">Klik atau Seret File ke Sini</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 16px;">Hanya format .PDF (Maks 5MB)</div>
+            <input type="file" id="tambahan-file" accept="application/pdf" style="width: 100%; max-width: 250px; margin: 0 auto; display: block;" required>
+          </div>
+        </div>
+        
+        <div class="divider" style="margin: 0 0 16px 0;"></div>
+        
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-upload-tambahan')">Batal</button>
+          <button type="submit" id="btn-submit-tambahan" class="btn btn-primary">
+            Simpan & Unggah
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" style="margin-left: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-tahapan"><div class="modal"><div class="modal-header"><div class="modal-title">Update Tahapan</div><button class="modal-close" onclick="closeModal('modal-tahapan')"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="modal-body" id="modal-tahapan-body"></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-tahapan')">Batal</button><button class="btn btn-primary" onclick="saveTahapanUpdate()">Simpan & Unggah</button></div></div></div>
+<div class="modal-overlay" id="modal-view-tahapan"><div class="modal"><div class="modal-header"><div class="modal-title">Detail Tahapan</div><button class="modal-close" onclick="closeModal('modal-view-tahapan')"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="modal-body" id="modal-view-tahapan-body"></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-view-tahapan')">Tutup</button><button class="btn btn-primary" id="btn-edit-tahapan">Edit Data</button></div></div></div>
+<div class="modal-overlay" id="modal-tutup"><div class="modal"><div class="modal-header"><div class="modal-title">Tutup Berkas</div><button class="modal-close" onclick="closeModal('modal-tutup')"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="modal-body"><div class="form-group mb-3"><label>Alasan Penutupan *</label><textarea class="form-control" id="tutup-alasan" required></textarea></div><div class="form-group"><label>Upload Dokumen (PDF) *</label><input type="file" class="form-control" id="tutup-file" accept="application/pdf"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-tutup')">Batal</button><button class="btn btn-danger" onclick="saveTutupBerkas()">Tutup Berkas</button></div></div></div>
+<div class="modal-overlay" id="modal-buka"><div class="modal"><div class="modal-header"><div class="modal-title">Buka Berkas</div><button class="modal-close" onclick="closeModal('modal-buka')"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="modal-body"><div class="form-group"><label>Alasan Dibuka *</label><textarea class="form-control" id="buka-alasan" required></textarea></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modal-buka')">Batal</button><button class="btn btn-primary" onclick="saveBukaBerkas()">Buka Berkas</button></div></div></div>
+<div class="modal-overlay" id="modal-pdf-viewer"><div class="modal" style="width:95%; max-width:1000px; height:90vh; display:flex; flex-direction:column;"><div class="modal-header"><div class="modal-title" id="pdf-viewer-title" style="font-size:16px;">Pratinjau</div><button class="modal-close" onclick="closeModal('modal-pdf-viewer')"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="modal-body" style="flex:1; padding:0; background:#E8E8E8;"><iframe id="pdf-iframe" style="width:100%; height:100%; border:none;"></iframe></div></div></div>
+<div id="toast-container"></div>
+
+<script src="app.js"></script>
+<div class="modal-overlay" id="modal-edit-berkas">
+  <div class="modal" style="max-width: 650px;">
+    <div class="modal-header">
+      <div class="modal-title" style="font-size: 18px;">Edit Data Permohonan</div>
+      <button class="modal-close" onclick="closeModal('modal-edit-berkas')">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="form-edit-berkas" onsubmit="saveEditBerkas(event)">
+        <input type="hidden" id="edit-id">
+        <div class="form-grid">
+          <div class="form-group"><label>Nama Pemohon</label><input type="text" id="edit-pemohon" class="form-control" required></div>
+          <div class="form-group"><label>Nama Termohon</label><input type="text" id="edit-termohon" class="form-control" placeholder="Pihak lawan..."></div>
+          <div class="form-group"><label>Pemegang Hak (Di Sertipikat)</label><input type="text" id="edit-pemeganghak" class="form-control" required></div>
+          <div class="form-group"><label>Luas Tanah (m²)</label><input type="text" id="edit-luas" class="form-control" oninput="formatRibuan(this)" required></div>
+          <div class="form-group"><label>Penanggung Jawab (PIC)</label>
+            <select class="form-control" id="edit-pj">
+              <option value="Budi Santoso">Budi Santoso</option>
+              <option value="Siti Aminah">Siti Aminah</option>
+              <option value="Ahmad Fauzi">Ahmad Fauzi</option>
+              <option value="Rini Sulistyowati">Rini Sulistyowati</option>
+              <option value="Reza Pramana">Reza Pramana</option>
+            </select>
+          </div>
+          <div class="form-group full"><label>Alasan Perubahan (Wajib diisi) *</label><input type="text" id="edit-alasan" class="form-control" placeholder="Contoh: Memperbaiki salah ketik luas tanah sesuai fisik buku tanah" required style="border-color: var(--black); background: #F8FAFC;"></div>
+        </div>
+        <div class="divider" style="margin: 20px 0 16px;"></div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-edit-berkas')">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-edit">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
